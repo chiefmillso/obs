@@ -44,3 +44,18 @@ New-SPEnterpriseSearchCrawlComponent –SearchTopology $clone -SearchServiceInst
 New-SPEnterpriseSearchIndexComponent –SearchTopology $clone -SearchServiceInstance $searchServiceInstance
 New-SPEnterpriseSearchQueryProcessingComponent –SearchTopology $clone -SearchServiceInstance $searchServiceInstance
 $clone.Activate()
+
+
+# Provision Enterprise Search Centre
+# http://millerd2013/sites/search
+
+
+$appSearchSvc = Get-SPEnterpriseSearchServiceApplication "SearchServiceApp"
+$appSearchSvc.SearchCenterUrl = "http://millerd2013/sites/search/pages";
+$appSearchSvc.Update()
+
+# Provision Managed Metadata Service
+$appMetadataSvc = New-SPMetadataServiceApplication -Name "MetadataServiceApp" -ApplicationPool $appPoolSubSvc -DatabaseName "SP-Dev-ManMeta"
+$proxyMetadataSvc = New-SPMetadataServiceApplicationProxy -Name "MetadataServiceApp Proxy" -ServiceApplication $appMetadataSvc
+$group = Get-SPServiceApplicationProxyGroup
+Add-SPServiceApplicationProxyGroupMember $group $proxyMetadataSvc
