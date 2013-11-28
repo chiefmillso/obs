@@ -1,4 +1,5 @@
 $serverName = "MILLERD2013"
+$dbAlias = "SP2013"
 
 # Ensure Timer Services are Running
 NET START SPAdminV4
@@ -59,3 +60,22 @@ $appMetadataSvc = New-SPMetadataServiceApplication -Name "MetadataServiceApp" -A
 $proxyMetadataSvc = New-SPMetadataServiceApplicationProxy -Name "MetadataServiceApp Proxy" -ServiceApplication $appMetadataSvc
 $group = Get-SPServiceApplicationProxyGroup
 Add-SPServiceApplicationProxyGroupMember $group $proxyMetadataSvc
+
+# Provision BDC
+$appPoolSubSvc = Get-SPServiceApplicationPool "Service Applications"
+$appBdcSvc = New-SPBusinessDataCatalogServiceApplication -Name "Business Data Catalog" -ApplicationPool $appPoolSubSvc -DatabaseName "SP-Dev-BDC" -DatabaseServer $dbAlias
+$ServiceInstance = Get-SPServiceInstance | Where-Object { $_.TypeName -like "*Business*" }
+Start-SPServiceInstance $ServiceInstance
+
+# Provision Secure Store
+$appSecureStoreSvc = New-SPSecureStoreServiceApplication –ApplicationPool $appPoolSubSvc –AuditingEnabled:$false –DatabaseServer $dbAlias –DatabaseName "SP-Dev-SecureStore" -Name "Secure Store"
+$appSecureStoreProxy = New-SPSecureStoreServiceApplicationProxy -Name "Secure Store Proxy" -ServiceApplication $appSecureStoreSvc
+$ServiceInstance = Get-SPServiceInstance | Where-Object { $_.TypeName -like "*Secure Store*" }
+Start-SPServiceInstance $ServiceInstance
+# Ensure Secure Store is active
+iisreset
+
+$passphrase = "Password!"
+Update-SPSecureStoreMasterKey -ServiceApplicationProxy $appSecureStoreProxy -PassPhrase $passphrase
+
+
