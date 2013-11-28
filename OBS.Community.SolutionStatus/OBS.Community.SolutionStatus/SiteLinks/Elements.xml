@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <!-- Farm Management Page -->
+  <!-- Link: Farm Solutions -->
+  <CustomAction
+		 Id="OBS_FM_MFS"
+		 GroupId="FarmManagement"
+		 Location="Microsoft.SharePoint.Administration.SystemSettings"
+		 Sequence="30"
+     Description="Deploy or retract solution packages across the farm"
+     Title="Manage farm solutions">
+    <UrlAction Url="/_admin/obs.community.solutionstatus/solutions.aspx" />
+  </CustomAction>
+  <HideCustomAction
+      Id="Hide_FM_MFS"
+      HideActionId="FM_MFS"
+		  GroupId="FarmManagement"
+		 Location="Microsoft.SharePoint.Administration.SystemSettings"
+    />
+</Elements>
