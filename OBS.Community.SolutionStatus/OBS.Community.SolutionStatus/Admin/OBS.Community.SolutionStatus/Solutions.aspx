@@ -30,11 +30,6 @@
         });
     }
 
-    function Download(solutionId, obj) {
-        var anchor = $(obj);
-        window.href = 'SolutionStatus.ashx?operation=download&solutionId' + solutionId;
-    }
-
     $(document).ready(function () {
         $("#SolutionsGrid a.retrieve").each(function (index, el) {
             $(el).click();
@@ -81,7 +76,7 @@
                         HeaderText="Download">
                         <ItemStyle VerticalAlign="Top" />
                         <ItemTemplate>
-                            <a class="download" href="#" onclick="Download('<%# Eval("ItemName") %>', this)">Download</a>
+                            <a class="download" href="SolutionStatus.ashx?operation=download&solutionId=<%# Eval("ItemName") %>">Download</a>
                         </ItemTemplate>    
                     </asp:TemplateField>
 					<asp:BoundField

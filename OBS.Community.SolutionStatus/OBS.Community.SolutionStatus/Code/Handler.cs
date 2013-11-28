@@ -273,10 +273,7 @@ namespace OBS.Community.SolutionStatus
             const string key = "operation";
             var queryString = context.Request.QueryString;
             var value = queryString[key];
-            bool result;
-            if (bool.TryParse(value, out result))
-                return result;
-            return false;
+            return value.Equals("Download", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public bool IsReusable
